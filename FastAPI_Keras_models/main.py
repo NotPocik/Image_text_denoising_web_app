@@ -32,7 +32,6 @@ async def load_models_on_startup():
         custom_objects={'Custom>ssim_loss': ssim_loss}
     )
     }
-    print("Модели успешно загружена")
 
 def denoise_image(img_bytes, model, target_size=(540, 540)):
     try:
@@ -55,7 +54,6 @@ def denoise_image(img_bytes, model, target_size=(540, 540)):
 async def denoise_images(files: List[UploadFile] = File(...), model_str: str = Form(None)):
     if not files:
         raise HTTPException(status_code=400, detail="Не загружено ни одного изображения")
-    print(model_str)
     if model_str not in models.keys():
         raise HTTPException(status_code=400, detail="Модель выбрана некорректно")
     
@@ -96,7 +94,3 @@ async def denoise_images(files: List[UploadFile] = File(...), model_str: str = F
             })
     
     return JSONResponse(content={"results": results})
-
-@app.get("/")
-async def root():
-    return {"message": "Сервер для обработки изображений работает"}
