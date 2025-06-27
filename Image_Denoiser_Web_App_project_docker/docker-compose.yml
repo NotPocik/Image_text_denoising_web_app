@@ -1,0 +1,38 @@
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: Image_Denoiser_DB
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/data:/var/lib/postgresql/data 
+      - ./db/dumps:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  fastapi_image_denoiser:
+    build: ./fastapi_image_denoiser
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:root@db:5432/Image_Denoiser_DB"
+      IMAGE_PROCESSOR_SERVER_URL: "http://fastapi_keras_models:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  fastapi_keras_models:
+    build: ./fastapi_keras_models
+    ports:
+      - "8001:8000"
+    environment:
+      SERVER1_URL: "http://fastapi_image_denoiser:8000" 
+    depends_on:
+      - fastapi_image_denoiser

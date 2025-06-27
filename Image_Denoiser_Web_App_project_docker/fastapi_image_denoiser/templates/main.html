@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Text Denoiser</title>
+    <link rel="stylesheet" href="/static/main_style.css">
+</head>
+<body>
+    <!-- Шапка -->
+    <header>
+        <div class="logo">
+            <h1>Image Text Denoiser</h1>
+        </div>
+        <div class="auth-menu">
+            <span id="username-display" class="hidden"></span>
+            <a href="#logout" id="logout-link" class="hidden" onclick="logout()">Выйти</a>
+            <a href="#login" id="login-link" onclick="login()">Войти</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="upload-section">
+            <div class="upload-container">
+                <form id="image-upload-form" class="upload-form">
+                    <div class="form-group">
+                        <label for="image-upload" class="upload-label">
+                            <span class="upload-icon">📁</span>
+                            <span class="upload-text">Выберите изображение (до 10 файлов)</span>
+                            <input type="file" id="image-upload" accept="image/*" multiple>
+                        </label>
+                        <div id="file-list" class="file-list"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="model-select">Модель обработки:</label>
+                        <select id="model-select" class="model-select" disabled>
+                            <option value="">-- Выберите модель --</option>
+                            {% for model in models %}
+                            <option value="{{model}}">{{model}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="process-button" disabled>Обработать</button>
+                    <div id="auth-warning" class="auth-warning hidden">
+                        Для использования моделей необходимо <a href="#login" onclick="login()">войти</a>
+                    </div>
+                </form>
+            </div>
+        </section>
+        
+        <section class="results-section hidden">
+            <h2 class="section-title">Результаты обработки</h2>
+            <div id="results-container" class="results-container"></div>
+        </section>
+    </main>
+
+    <div id="notifications-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;"></div>
+    
+    <script src="/static/main_script.js"></script>
+</body>
+</html>
